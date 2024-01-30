@@ -248,9 +248,12 @@ have prices available, so they can’t be plotted.</span></span></p>
 <ol start="3" style="list-style-type: decimal">
 <li>Create a faceted histogram where each facet represents a neighbourhood and displays the distribution of Airbnb prices in that neighbourhood. Think critically about whether it makes more sense to stack the facets on top of each other in a column, lay them out in a row, or wrap them around. Along with your visualisation, include your reasoning for the layout you chose for your facets.</li>
 </ol>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ___, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> ___)) <span class="sc">+</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> ___) <span class="sc">+</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>___)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> edibnb, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> price)) <span class="sc">+</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">25</span>) <span class="sc">+</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> neighbourhood, <span class="at">ncol =</span> <span class="dv">1</span>)</span></code></pre></div>
+<ul>
+<li><em>I have chose a vertically-stacked format to represent this data, because if the data is stacked vertically, we can see the price distribution in each neighbourhood and compare them to eachother more easily along the price axis, so that we can see which neighbourhood has more airbnbs within certain price ranges. For example, if someone wanted an airbnb between 250 and 500GBP per night, they could see what neighbourhoods have more within what parts of that price range (at least, assuming that the graph were rendered with enough vertical room for all the facets, unlike the image viewer in rstudio is doing right now).</em></li>
+</ul>
 <p>Let’s de-construct this code:</p>
 <ul>
 <li><code>ggplot()</code> is the function we are using to build our plot, in layers.</li>

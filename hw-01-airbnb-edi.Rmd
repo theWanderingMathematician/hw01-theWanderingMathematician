@@ -7,6 +7,9 @@ output:
     tufte_variant: "envisioned"
     highlight: pygments
 link-citations: true
+editor_options: 
+  markdown: 
+    wrap: sentence
 ---
 
 ```{r include = FALSE}
@@ -87,11 +90,11 @@ You can also find this information [here](https://rstudio-education.github.io/ds
 
 1.  How many observations (rows) does the dataset have? Instead of hard coding the number in your answer, use inline code.
 
-- *There are `r nrow(dsbox::edibnb)` observations in the `edibnb` dataset.*
+-   *There are `r nrow(dsbox::edibnb)` observations in the `edibnb` dataset.*
 
 2.  Run `View(edibnb)` in your Console to view the data in the data viewer. What does each row in the dataset represent?
 
-- *Each row in the dataset represents a single airbnb.*
+-   *Each row in the dataset represents a single airbnb.*
 
 🧶 ✅ ⬆️ *Knit,* *commit, and push your changes to GitHub with an appropriate commit message. Make sure to commit and push all changed files so that your Git pane is cleared up afterwards.*
 
@@ -110,11 +113,13 @@ You can find descriptions of each of the variables in the help file for the data
 
 3.  Create a faceted histogram where each facet represents a neighbourhood and displays the distribution of Airbnb prices in that neighbourhood. Think critically about whether it makes more sense to stack the facets on top of each other in a column, lay them out in a row, or wrap them around. Along with your visualisation, include your reasoning for the layout you chose for your facets.
 
-````r
-ggplot(data = ___, mapping = aes(x = ___)) +
-  geom_histogram(binwidth = ___) +
-  facet_wrap(~___)
-````
+```{r}
+ggplot(data = edibnb, mapping = aes(x = price)) +
+  geom_histogram(binwidth = 25) +
+  facet_wrap(~ neighbourhood, ncol = 1)
+```
+
+- *I have chose a vertically-stacked format to represent this data, because if the data is stacked vertically, we can see the price distribution in each neighbourhood and compare them to eachother more easily along the price axis, so that we can see which neighbourhood has more airbnbs within certain price ranges. For example, if someone wanted an airbnb between 250 and 500GBP per night, they could see what neighbourhoods have more within what parts of that price range (at least, assuming that the graph were rendered with enough vertical room for all the facets, unlike the image viewer in rstudio is doing right now).*
 
 Let's de-construct this code:
 
