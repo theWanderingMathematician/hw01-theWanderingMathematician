@@ -86,7 +86,12 @@ You can also find this information [here](https://rstudio-education.github.io/ds
 ```
 
 1.  How many observations (rows) does the dataset have? Instead of hard coding the number in your answer, use inline code.
+
+- *There are `r nrow(dsbox::edibnb)` observations in the `edibnb` dataset.*
+
 2.  Run `View(edibnb)` in your Console to view the data in the data viewer. What does each row in the dataset represent?
+
+- *Each row in the dataset represents a single airbnb.*
 
 🧶 ✅ ⬆️ *Knit,* *commit, and push your changes to GitHub with an appropriate commit message. Make sure to commit and push all changed files so that your Git pane is cleared up afterwards.*
 
