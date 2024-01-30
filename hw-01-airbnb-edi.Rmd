@@ -1,6 +1,6 @@
 ---
 title: "HW 01 - Airbnb listings in Edinburgh"
-Author: "Adam J Sullivan"
+Author: "Micaiah Balonek"
 output: 
   tufte::tufte_html:
     css: ../hw.css
