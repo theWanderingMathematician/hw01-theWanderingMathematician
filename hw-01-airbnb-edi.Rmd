@@ -131,7 +131,65 @@ Let's de-construct this code:
 🧶 ✅ ⬆️ Knit, *commit, and push your changes to GitHub with an appropriate commit message. Make sure to commit and push all changed files so that your Git pane is cleared up afterwards.*
 
 4.  Use a single pipeline to identity the neighbourhoods with the top five median listing prices. Then, in another pipeline filter the data for these five neighbourhoods and make ridge plots of the distributions of listing prices in these five neighbourhoods. In a third pipeline calculate the minimum, mean, median, standard deviation, IQR, and maximum listing price in each of these neighbourhoods. Use the visualisation and the summary statistics to describe the distribution of listing prices in the neighbourhoods. (Your answer will include three pipelines, one of which ends in a visualisation, and a narrative.)
+
+```{r}
+edibnb_prices <- edibnb[,-c(1,4,5,6,7,8,9,10)] 
+edibnb_median <- edibnb_prices %>% 
+  filter(!is.na(price) & !is.na(neighbourhood)) %>%
+  group_by(neighbourhood) %>%
+  summarise_all(.funs = median)
+
+top5median <- edibnb_median %>%
+  arrange(-price) %>%
+  slice(1:5)
+top5median
+```
+```{r}
+edibnb %>%
+  filter(neighbourhood == "New Town" | neighbourhood == "Old Town" | neighbourhood == "West End" | neighbourhood == "Stockbridge" | neighbourhood == "Bruntsfield") %>%
+  ggplot(aes(x = price, y = neighbourhood, colour = neighbourhood, fill = neighbourhood)) +
+    geom_density_ridges(alpha = 0.1) +
+    labs(title = "Prices of airbnbs in Edinburgh", subtitle = "arranged by neighbourhood", x = "Price", y = "Neighbourhood", colour = "", fill = "")
+```
+
+``` {r}
+NeighStats <- edibnb_prices %>% 
+  group_by(neighbourhood) %>%
+  filter(neighbourhood == "New Town" | neighbourhood == "Old Town" | neighbourhood == "West End" | neighbourhood == "Stockbridge" | neighbourhood == "Bruntsfield") %>%
+  filter(!is.na(price)) %>%
+  summarise_all(.funs = c(min, median, mean, sd, IQR, max))
+
+names(NeighStats)[2] <- ("min")
+names(NeighStats)[3] <- ("median")
+names(NeighStats)[4] <- ("mean")
+names(NeighStats)[5] <- ("standard_deviation")
+names(NeighStats)[6] <- ("IQR")
+names(NeighStats)[7] <- ("max")
+NeighStats
+```
+
+- *From the plotted data, we can see that the distributions of prices fall into two different shapes: the roughly symmetrical (to the point where zero is reached, that is) plots of West End, New Town, and Old Town, and the notably left-skewed plots of Stockbridge and Bruntsfield's distributions, on which the peak is not only skewed, but also more broad on top. The tibble confirms our guess by showing Bruntsfield and Stockbridge as having the lowest medians and means; interestingly, though, they also have the lowest values in all of the categories other than minimum value, having the smallest interquartile range and standard deviation, presumably partially because most of their values are clustered around the central area and the peak itself contains more values, while their tails are lower and end earlier than the others. According to the tibble, Old Town and New Town have the highest standard deviations and means. Could the standard deviations be larger mainly because the means are higher, allowing values to be farther away from them on the smaller side? The differences between their means and minimum values are indeed larger than the other neighbourhoods, but are still smaller than their standard deviations.Also visible on the graph, Old Town and West End have a small jump upwards in numbers at 500GBP, unlike the other three neighbourhoods.*
+
 5.  Create a visualization that will help you compare the distribution of review scores (`review_scores_rating`) across neighbourhoods. You get to decide what type of visualisation to create and there is more than one correct answer! In your answer, include a brief interpretation of how Airbnb guests rate properties in general and how the neighbourhoods compare to each other in terms of their ratings.
+
+```{r}
+edibnb %>%
+  mutate(review_scores_modified = (review_scores_rating*number_of_reviews + 100)/(number_of_reviews + 2)) %>%
+  ggplot(aes(x = review_scores_modified, y = neighbourhood, colour = neighbourhood, fill = neighbourhood)) +
+  geom_density_ridges(alpha = 0.1) +
+  labs(title = "Ratings of airbnbs in Edinburgh", subtitle = "By neighbourhood", x = "Review score", y = "")
+
+edibnb %>%
+  mutate(review_scores_modified = (review_scores_rating*number_of_reviews + 100)/(number_of_reviews + 2)) %>%
+  mutate(price_to_score = 100*price/ review_scores_modified) %>%
+  ggplot(aes(x = price_to_score, y = neighbourhood, colour = neighbourhood, fill = neighbourhood)) +
+  geom_density_ridges(alpha = 0.1) +
+  labs(title = "Qualitative prices of airbnbs", subtitle = "By neighbourhood", x = "Price modulated by rating", y = "") +
+  xlim(0, 1000) 
+```
+
+- *The first chart here shows the ratings of airbnbs in different neighbourhoods in Edinburgh, with the ratings modified according to the rule of succession (meaning that I calculated the review score if there were two more ratings: one at 0, and one at 100), so that the ratings are more likely to be indicative of the true nature of the quality, and (for example) an airbnb with a single 100% rating wouldn't be listed higher than one with a hundred reviews, averaging to 95%. Looking at the modes of each distribution, we see that New Town has the highest-valued peak, just ahead of Leith, Cannonmills, Old Town, and Southside. Southside's own mode slides down towards the lower end of the distribution, being much more right-skewed than the others.*
+- *The second plot here is a similar distribution, but this time the x-axis is price multiplied by the modified rating, producing what I call an "affordability score" or the "qualitative price", meaning that two airbnbs with the same prices but with different ratings will show up in different places; an airbnb with a score of 50 will have its qualitative price doubled, while one with a score of 80 will have its score multiplied by 1.25. In this plot, Bruntsfield, Haymarket, and Morningside appear to have the lowest modes, thereby appearing as the cheapest per quality of the airbnbs. However, a numerical analysis of that data (similar to the above analysis of actual price) would be required to fully determine the cheapest per quality.*
 
 🧶 ✅ ⬆️ Knit, *commit, and push your changes to GitHub with an appropriate commit message. Make sure to commit and push all changed files so that your Git pane is cleared up afterwards and review the md document on GitHub to make sure you're happy with the final state of your work.*
 
